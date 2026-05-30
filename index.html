@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nivolu</title>
+  <meta name="description" content="Nivolu — Foto, Video, Design & Content für Brands, Events und lokale Unternehmen."/>
+  <style>
+    :root{
+        /* Warmes Beige bleibt */
+        --bg: #f4f1e6;           /* warmes off-white / beige */
+        --ink: #121212;
+
+        /* Stage/Card: tiefes Blau-Navy mit leichtem Teal-Stich */
+        --card: #0b1c22;         /* navy teal */
+        --card2:#0f2630;         /* optional für leichte Layer */
+
+        /* Textmutes auf dunkler Card */
+        --muted: rgba(255,255,255,.74);
+        --muted2: rgba(255,255,255,.58);
+
+        /* Neon Accent */
+        --accent: #05C9FA;       /* dein Neon */
+        --accent2:#37D9FF;       /* Hover/Glow */
+
+        --radius: 28px;
+        --shadow: 0 18px 55px rgba(0,0,0,.18);
+        --max: 1200px;
+
+        --ease-soft: cubic-bezier(.22,.61,.36,1);
+        --ease-smooth: cubic-bezier(.4,0,.2,1);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        color: var(--ink);
+        background: var(--bg);
+        overflow-x: hidden;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Soft neon glow edges */
+    .glow{
+      position: fixed;
+      inset: -75vh -25vw auto -25vw;
+      height: 185vh;
+      pointer-events:none;
+      z-index: -1;
+      background:
+        radial-gradient(closest-side at 18% 55%, rgba(5,201,250,.45), transparent 70%),
+        radial-gradient(closest-side at 82% 45%, rgba(5,201,250,.25), transparent 75%),
+        radial-gradient(closest-side at 50% 10%, rgba(255,226,170,.18), transparent 80%);
+      filter: blur(25px);
+      opacity: .85;
+      transform: translateY(-6vh);
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 20px 18px 30px;
+
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 18px;
+      padding: 10px 0 18px;
+    }
+    .brand{
+      display:flex; align-items:baseline; gap: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .brand .name{ font-size: 22px; }
+    .brand .tag{ font-size: 12px; opacity:.6; font-weight:700; letter-spacing:.12em; }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      gap: 18px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+    }
+    .nav a{ 
+        opacity:.75; 
+        transition:
+            color .25s var(--ease-smooth),
+            opacity .25s var(--ease-smooth);
+    }
+    .nav a:hover{ opacity:1; }
+
+    .cta{
+      display:flex; align-items:center; gap: 10px;
+    }
+    .btn{
+      border: 1px solid rgba(18,18,18,.25);
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+      font-size: 12px;
+      cursor:pointer;
+      transition:
+        background-color .35s var(--ease-soft),
+        color .35s var(--ease-soft),
+        border-color .35s var(--ease-soft),
+        box-shadow .35s var(--ease-soft),
+        transform .25s var(--ease-soft);
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(18,18,18,.45); }
+    .btn--accent{
+      background: var(--accent);
+      border-color: transparent;
+      transition:
+        background-color .4s var(--ease-soft),
+        box-shadow .4s var(--ease-soft),
+        transform .25s var(--ease-soft);
+    }
+    .btn--accent:hover{ 
+        background: var(--accent2);
+        box-shadow: 0 8px 24px rgba(5,201,250,.35);
+    }
+
+    /* Glass Blob Button (wie Placeholder-Glas) */
+    .btn--blobglass{
+      position: relative;
+      overflow: hidden;
+
+      /* Form */
+      border-radius: 14px;
+
+      /* Dark glass base */
+      background: rgba(13, 61, 78, 0.55);
+      color: rgba(255,255,255,.92);
+      z-index: 0;
+
+      border: 1px solid rgba(255,255,255,.14);
+
+      /* Glass */
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+
+      /* Depth */
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.20),
+        0 10px 28px rgba(0,0,0,.18);
+
+      transition:
+        transform .25s var(--ease-soft),
+        box-shadow .45s var(--ease-soft),
+        border-color .45s var(--ease-soft),
+        background-color .45s var(--ease-soft);
+    }
+
+    .btn--blobglass .btn-label{
+      position: relative;
+      z-index: 3;                  /* GANZ vorne */
+      color: #fff;
+    }
+
+    /* Cyan blob */
+    .btn--blobglass::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(11,28,34,.55),
+        transparent 55%
+      );
+      filter: blur(18px);
+      opacity: .9;
+      transform: translate3d(0,0,0);
+      pointer-events:none;
+      z-index: 1;
+    }
+
+    /* Soft white highlight blob */
+    .btn--blobglass::after{
+      content:"";
+      position:absolute;
+      inset:-50%;
+      background: radial-gradient(circle at 75% 55%,
+        rgba(255,255,255,.22),
+        transparent 60%
+      );
+      filter: blur(16px);
+      opacity: .75;
+      transform: translate3d(0,0,0);
+      pointer-events:none;
+      z-index: 2;
+    }
+
+    /* Top glass sheen (feine Lichtkante) */
+    .btn--blobglass .sheen{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background: linear-gradient(
+        120deg,
+        rgba(255,255,255,.20),
+        rgba(255,255,255,.08),
+        rgba(255,255,255,0)
+      );
+      opacity: .65;
+      z-index: 2;
+    }
+
+    /* Hover: mehr “Liquid” */
+    .btn--blobglass:hover{
+      transform: translateY(-1px);
+      border-color: rgba(5,201,250,.35);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.28),
+        0 14px 40px rgba(23, 99, 118, 0.22),
+        0 14px 40px rgba(0,0,0,.18);
+    }
+
+    /* Optional: leichter Shift der Blobs beim Hover */
+    .btn--blobglass:hover::before{
+      transform: translateX(8%) translateY(-4%);
+      transition: transform .8s var(--ease-soft);
+    }
+    .btn--blobglass:hover::after{
+      transform: translateX(-6%) translateY(6%);
+      transition: transform .8s var(--ease-soft);
+    }
+
+    
+    /* Mobile menu */
+    .burger{
+      display:none;
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(18,18,18,.25);
+      background: rgba(255,255,255,.25);
+      cursor:pointer;
+      align-items:center; justify-content:center;
+      transition: transform .15s ease;
+    }
+    .burger:hover{ transform: translateY(-1px); }
+    .burger span{
+      display:block; width:18px; height:2px; background:#121212;
+      position: relative;
+    }
+    .burger span:before, .burger span:after{
+      content:""; position:absolute; left:0;
+      width:18px; height:2px; background:#121212;
+    }
+    .burger span:before{ top:-6px; }
+    .burger span:after{ top:6px; }
+
+    main{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Hero card */
+    .stage{
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+      padding: 34px 34px 28px;
+      margin-top: 10px;
+      min-height: 560px;
+      display:grid;
+      grid-template-columns: 240px 1fr 240px;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    /* subtle inner texture */
+    .stage:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(1200px 500px at 50% 0%, rgba(5,201,250,.12), transparent 55%),
+        radial-gradient(900px 500px at 0% 100%, rgba(255,255,255,.06), transparent 55%),
+        radial-gradient(900px 500px at 100% 100%, rgba(255,255,255,.05), transparent 60%);
+      pointer-events:none;
+    }
+
+    .stage > *{ position: relative; z-index: 1; }
+
+    /* Left mini nav */
+    .miniNav{
+      color: rgba(255,255,255,.92);
+      padding-top: 10px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap: 26px;
+    }
+    .miniNav .label{
+      font-size: 11px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      opacity: .55;
+      font-weight: 800;
+    }
+    .miniNav a{
+      display:block;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      font-size: 20px;
+      line-height: 1.1;
+      padding: 6px 0;
+      opacity: .95;
+      transition:
+        color .25s var(--ease-smooth),
+        opacity .25s var(--ease-smooth);
+    }
+    .miniNav a:hover{ color: var(--accent); }
+    .miniNav .smallCta{
+      margin-top: 10px;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      color: var(--accent);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing:.08em;
+    }
+
+    /* Center content */
+    .hero{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap: 18px;
+      padding: 6px 6px 0;
+    }
+
+    .kicker{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap: 10px;
+      color: var(--accent);
+      font-weight: 900;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .kicker .dot{
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(5,201,250,.14);
+    }
+
+    .headline{
+      text-align:center;
+      color:#fff;
+      margin: 4px 0 0;
+      padding-top: 30px;
+      line-height: 0.98;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+      font-size: clamp(44px, 5.1vw, 76px);
+      text-transform: uppercase;
+    }
+    .headline .accent{ color: var(--accent); }
+    .sub{
+      text-align:center;
+      color: var(--muted);
+      max-width: 56ch;
+      margin: 10px auto 0;
+      padding: 20px 26px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .heroActions{
+      display:flex;
+      justify-content:center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btnDark{
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+    }
+    .btnDark:hover{ border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.09); }
+
+    /* Visual placeholder */
+    .visual{
+      margin: 18px auto 0;
+      width: min(520px, 95%);
+      aspect-ratio: 16 / 10;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)),
+        radial-gradient(600px 180px at 50% 0%, rgba(5,201,250,.18), transparent 60%);
+      border: 1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      position: relative;
+    }
+    .visual:before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(140px 140px at 18% 30%, rgba(5,201,250,.26), transparent 60%),
+        radial-gradient(180px 180px at 80% 60%, rgba(255,255,255,.12), transparent 70%);
+      mix-blend-mode: screen;
+      opacity: .7;
+      pointer-events:none;
+    }
+    .visual .label{
+      position:absolute;
+      left: 16px; bottom: 14px;
+      color: rgba(255,255,255,.78);
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .visual .hint{
+      position:absolute;
+      right: 16px; top: 14px;
+      color: rgba(255,255,255,.62);
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 11px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+
+    /* Right column */
+    .side{
+      color: rgba(255,255,255,.92);
+      padding-top: 10px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap: 26px;
+    }
+    .side .label{
+      font-size: 11px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      opacity: .55;
+      font-weight: 800;
+      text-align:right;
+    }
+    .social a{
+      display:block;
+      text-align:right;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.02em;
+      font-size: 20px;
+      line-height: 1.1;
+      padding: 6px 0;
+      opacity: .95;
+      transition:
+        color .25s var(--ease-smooth),
+        opacity .25s var(--ease-smooth);
+    }
+    .social a:hover{ color: var(--accent); }
+
+    /* Bottom brand row inside stage */
+    .logos{
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      align-items:center;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.50);
+      text-transform: uppercase;
+      letter-spacing:.10em;
+      font-weight: 900;
+      font-size: 11px;
+      flex-wrap: wrap;
+    }
+    .logos span{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+    }
+
+    /* Sections */
+    section{
+      padding: 70px 0 0;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+      align-items:start;
+    }
+    h2{
+      margin:0;
+      font-size: clamp(26px, 2.6vw, 40px);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      font-weight: 950;
+      line-height: 1.0;
+    }
+    .lead{
+      margin: 12px 0 0;
+      color: rgba(18,18,18,.78);
+      line-height: 1.65;
+      font-size: 16px;
+      max-width: 70ch;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .card{
+      border-radius: 18px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(18,18,18,.10);
+      padding: 16px 16px 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.05);
+    }
+    .card .t{
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing:.06em;
+      font-size: 12px;
+    }
+    .card .p{
+      margin: 10px 0 0;
+      color: rgba(18,18,18,.78);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .work{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .work .tile{
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid rgba(18,18,18,.10);
+      overflow:hidden;
+      min-height: 220px;
+      position: relative;
+      transition:
+        transform .35s var(--ease-soft),
+        box-shadow .35s var(--ease-soft);
+    }
+    .work .tile:before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(500px 200px at 20% 20%, rgba(5,201,250,.22), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.05));
+      pointer-events:none;
+    }
+    .work .meta{
+      position:absolute; left: 14px; bottom: 14px;
+      background: rgba(18,18,18,.82);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      max-width: 85%;
+    }
+    .work .meta b{
+      display:block;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing:.06em;
+      font-size: 12px;
+    }
+    .work .meta span{
+      display:block;
+      margin-top: 6px;
+      color: rgba(255,255,255,.75);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .contactBox{
+      border-radius: 24px;
+      background: var(--card);
+      color: #fff;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+    }
+    .contactBox p{
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .form input, .form textarea{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      padding: 12px 12px;
+      font: inherit;
+      outline: none;
+    }
+    .form textarea{ grid-column: 1 / -1; min-height: 120px; resize: vertical; }
+    .form input::placeholder, .form textarea::placeholder{ color: rgba(255,255,255,.55); }
+
+    footer{
+      margin-top: auto;
+      padding: 26px 0 30px;
+      border-top: 1px solid rgba(18,18,18,.12);
+      color: rgba(18,18,18,.70);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .nav{ display:none; }
+      .burger{ display:flex; }
+      .stage{
+        grid-template-columns: 1fr;
+        padding: 26px 18px 18px;
+        min-height: unset;
+      }
+      .miniNav, .side{ display:none; }
+      .visual{ width: 100%; }
+      .cards{ grid-template-columns: 1fr; }
+      .work{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .form{ grid-template-columns: 1fr; }
+    }
+
+    /* Slide-down mobile menu */
+    .mobileMenu{
+      display:none;
+      position: absolute;
+      top: 68px;
+      right: 18px;
+      left: 18px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(18,18,18,.12);
+      border-radius: 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.12);
+      padding: 12px;
+      z-index: 10;
+      transition:
+        background-color .25s var(--ease-smooth),
+        color .25s var(--ease-smooth);
+    }
+    .mobileMenu a{
+      display:block;
+      padding: 12px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.06em;
+      font-size: 12px;
+      color: #121212;
+    }
+    .mobileMenu a:hover{ background: rgba(18,18,18,.06); }
+    .mobileMenu.open{ display:block; }
+  </style>
+</head>
+
+<body>
+  <div class="glow" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand" aria-label="Nivolu">
+        <div class="name">NIVOLU</div>
+        <div class="tag">Kreativagentur</div>
+      </div>
+
+      <nav class="nav" aria-label="Navigation">
+        <a href="services.html">Services</a>
+        <a href="#work">Work</a>
+        <a href="#about">Über</a>
+        <a href="#contact">Kontakt</a>
+      </nav>
+
+      <div class="cta">
+        <a class="btn btn--blobglass" href="#contact">
+          <span class="btn-label">Projekt anfragen</span>
+          <span class="sheen" aria-hidden="true"></span>
+        </a>
+        <button class="burger" id="burger" aria-label="Menü öffnen"><span></span></button>
+      </div>
+
+      <div class="mobileMenu" id="mobileMenu" role="dialog" aria-label="Mobiles Menü">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#about">Über</a>
+        <a href="#contact">Kontakt</a>
+        <a href="#contact" style="margin-top:6px; background: var(--accent);">Projekt anfragen</a>
+      </div>
+    </header>
+
+    <main>
+      <div class="stage" id="top">
+        <aside class="miniNav">
+          <div>
+            <div class="label">Projekte</div>
+            <a href="#foto">Foto</a>
+            <a href="#video">Video</a>
+            <a href="#design">Design</a>
+            <a href="#content">Content</a>
+          </div>
+          <div class="label">Based in NRW • Remote möglich</div>
+        </aside>
+
+        <section class="hero" aria-label="Hero">
+          <div>
+            <div class="kicker"><span class="dot"></span> Always building your brand.</div>
+            <h1 class="headline">
+              Content, der <span class="accent">wirkt</span>
+              & Geschichten <span class="accent">erzählt</span>.
+            </h1>
+            <p class="sub">
+              Nivolu ist deine Kreativwerkstatt für <b>Fotografie</b>, <b>Video</b>, <b>Produkt-/Grafikdesign</b> und
+              <b>Social Content</b> — zuverlässig, hochwertig und lokal verwurzelt.
+            </p>
+
+            <div class="visual" aria-label="Visual Platzhalter">
+
+            </div>
+          </div>
+
+          <div class="logos" aria-label="Tools/Partner">
+            <span>Adobe</span><span>DaVinci</span><span>Sony</span><span>Canon</span><span>Meta</span><span>Print</span>
+          </div>
+        </section>
+
+        <aside class="side">
+          <div>
+            <div class="label">Follow</div>
+            <div class="social">
+              <a href="https://www.instagram.com/nivolu.media/#"target="_blank" aria-label="Instagram">Instagram</a>
+              <a href="#" aria-label="TikTok">TikTok</a>
+              <a href="#" aria-label="YouTube">YouTube</a>
+              <a href="#" aria-label="Behance">Behance</a>
+            </div>
+          </div>
+          <div class="label">© 2026 NIVOLU</div>
+        </aside>
+      </div>
+      <!--
+      <section id="services">
+        <div class="grid">
+          <div>
+            <h2>Services</h2>
+            <p class="lead">
+              Von Konzept bis Ausspielung: Wir produzieren klare Visuals, die zu deiner Marke passen —
+              und bauen daraus Content-Pakete, die du wirklich nutzen kannst.
+            </p>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <div class="t">Foto</div>
+              <div class="p">Brand-Shootings, Produkte, Events, Portraits — clean & hochwertig.</div>
+            </div>
+            <div class="card">
+              <div class="t">Video</div>
+              <div class="p">Reels, Imagefilm, Aftermovies, Interviews — mit Fokus auf Story & Schnitt.</div>
+            </div>
+            <div class="card">
+              <div class="t">Design</div>
+              <div class="p">Grafik, Druck, Packaging, Social Templates — minimalistisch & markenkonform.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="work">
+        <div class="grid">
+          <div>
+            <h2>Work</h2>
+            <p class="lead">
+              3 schnelle Beispiele. Ersetze die Tiles später mit echten Cases (Bild als Background oder Video-Poster).
+            </p>
+          </div>
+          <div class="work">
+            <div class="tile">
+              <div class="meta"><b>Local Brand</b><span>Produktshooting + Social Assets</span></div>
+            </div>
+            <div class="tile">
+              <div class="meta"><b>Event</b><span>Aftermovie + Foto-Recap</span></div>
+            </div>
+            <div class="tile">
+              <div class="meta"><b>Personal Brand</b><span>Reels-Serie + Branding</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about">
+        <div class="grid">
+          <div>
+            <h2>Über Nivolu</h2>
+            <p class="lead">
+              Kleine Crew, hoher Anspruch: Wir arbeiten schnell, sauber und mit Blick fürs Detail.
+              Wenn du eine Marke aufbauen willst, die modern wirkt und sich abhebt — let’s build.
+            </p>
+          </div>
+          <div class="card">
+            <div class="t">Arbeitsweise</div>
+            <div class="p">
+              <b>1)</b> Briefing & Ziel<br/>
+              <b>2)</b> Konzept & Look<br/>
+              <b>3)</b> Produktion (Foto/Video)<br/>
+              <b>4)</b> Edit + Delivery (Formate für Insta/TikTok/Web)<br/>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="grid">
+          <div>
+            <h2>Kontakt</h2>
+            <p class="lead">
+              Erzähl kurz, was du brauchst. Du bekommst eine klare Rückmeldung mit Vorschlag
+              für Umfang, Timing und Budgetrahmen.
+            </p>
+          </div>
+
+          <div class="contactBox">
+            <b style="text-transform:uppercase; letter-spacing:.10em;">Projektanfrage</b>
+            <p>Antwort meist innerhalb von 24–48h.</p>
+
+            <form class="form" onsubmit="event.preventDefault(); alert('Gesendet! (Demo)');">
+              <input placeholder="Name" required />
+              <input placeholder="E-Mail" type="email" required />
+              <textarea placeholder="Worum geht’s? (Ziel, Umfang, Deadline)"></textarea>
+              <button class="btn btn--accent" type="submit">Anfrage senden</button>
+              <a class="btn btnDark" href="#top" style="text-align:center;">Zurück nach oben</a>
+            </form>
+          </div>
+        </div>
+      </section>
+      -->
+      <footer>
+        <div><b style="letter-spacing:.08em;">NIVOLU</b> — made by humans</div>
+        <div style="display:flex; gap:14px; flex-wrap:wrap;">
+          <a href="#">Impressum</a>
+          <a href="#">Datenschutz</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Mobile menu
+    const burger = document.getElementById("burger");
+    const menu = document.getElementById("mobileMenu");
+
+    burger?.addEventListener("click", () => menu.classList.toggle("open"));
+    menu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+
+    // Smooth scroll (fallback)
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", (e) => {
+        const id = a.getAttribute("href");
+        if (!id || id === "#") return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  </script>
+</body>
+</html>
