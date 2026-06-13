@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sassenberger Schützenfest — Nivolu</title>
+
+  <style>
+    :root{
+      --bg:#0b1c22;
+      --paper:#f4f1e6;
+      --ink:#121212;
+      --muted:rgba(18,18,18,.62);
+      --line:rgba(18,18,18,.72);
+      --soft-line:rgba(18,18,18,.24);
+      --accent:#05C9FA;
+      --accent2:#37D9FF;
+      --accentdark:#013846;
+      --ease:cubic-bezier(.22,.61,.36,1);
+    }
+
+    *{box-sizing:border-box}
+
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .site{
+      width:100%;
+      min-height:100vh;
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(670px 480px at 5vw 30vw, rgba(5,201,250,.20), transparent 68%),
+        radial-gradient(910px 820px at 86vw 26vw, rgba(40,177,198,.35), transparent 68%),
+        radial-gradient(720px 500px at 50% -10%, rgba(255,255,255,.70), transparent 62%),
+        linear-gradient(100deg,#f7f3e8 0%,#f3efe3 50%,#eff2d8 100%);
+    }
+
+    .grain{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.14;
+      mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    }
+
+    .site:before{
+      content:"";
+      position:absolute;
+      top:72px;
+      left:32px;
+      right:100px;
+      border-top:1px solid var(--line);
+    }
+
+    .site:after{
+      content:"";
+      position:absolute;
+      top:72px;
+      right:32px;
+      width:70px;
+      height:550px;
+      border-top:1px solid var(--line);
+      border-right:1px solid var(--line);
+      border-top-right-radius:72px;
+      pointer-events:none;
+    }
+
+    header{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 32px;
+      position:relative;
+      z-index:3;
+    }
+
+    .brand{
+      font-weight:900;
+      letter-spacing:-.04em;
+      font-size:32px;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap:28px;
+      font-size:16px;
+      font-weight:700;
+    }
+
+    nav a:hover{opacity:.55}
+
+    .project-hero{
+      position:relative;
+      z-index:2;
+      padding:70px 76px 50px 108px;
+      min-height:520px;
+    }
+
+    .project-meta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:28px;
+    }
+
+    .project-meta span{
+      border:1px solid var(--line);
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:900;
+      background:rgba(244,241,230,.35);
+    }
+
+    h1{
+      margin:0;
+      max-width:960px;
+      font-size:clamp(62px,8vw,118px);
+      line-height:.93;
+      letter-spacing:-.075em;
+      font-weight:950;
+      color:#050505;
+    }
+
+    .accent{color:var(--accent)}
+
+    .project-intro{
+      margin-top:46px;
+      max-width:520px;
+      color:var(--muted);
+      font-size:18px;
+      line-height:1.65;
+      font-weight:650;
+    }
+
+    .cover{
+      position:relative;
+      z-index:2;
+      margin:0 32px 58px;
+      height:680px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#111;
+    }
+
+    .cover img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter:brightness(.72) contrast(1.05);
+      display:block;
+    }
+
+    .overview{
+      position:relative;
+      z-index:2;
+      margin:0 32px 58px;
+      border-top:1px solid var(--line);
+      display:grid;
+      grid-template-columns:1fr 1fr;
+    }
+
+    .overview-box{
+      padding:34px;
+      border-right:1px solid var(--line);
+    }
+
+    .overview-box:last-child{border-right:0}
+
+    h2{
+      margin:0 0 20px;
+      font-size:clamp(42px,6vw,82px);
+      line-height:.9;
+      letter-spacing:-.075em;
+      font-weight:950;
+    }
+
+    .overview p,
+    .showcase-head p,
+    .result p{
+      margin:0;
+      max-width:560px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.7;
+      font-weight:650;
+    }
+
+    .pillrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .pill{
+      border:1px solid var(--soft-line);
+      padding:8px 12px;
+      font-size:14px;
+      font-weight:900;
+      background:rgba(255,255,255,.18);
+    }
+
+    .service-grid{
+      position:relative;
+      z-index:2;
+      margin:0 32px 58px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .service{
+      min-height:190px;
+      padding:30px 28px;
+      border-right:1px solid var(--line);
+    }
+
+    .service:last-child{border-right:0}
+
+    .number{
+      font-size:48px;
+      font-weight:900;
+      opacity:.15;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .service h3{
+      margin:0 0 10px;
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .service p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.55;
+      font-weight:650;
+    }
+
+    .showcase{
+      position:relative;
+      z-index:2;
+      padding:42px 32px 58px;
+      border-top:1px solid var(--line);
+    }
+
+    .showcase-head{
+      display:flex;
+      align-items:flex-end;
+      gap:50px;
+      margin-bottom:28px;
+    }
+
+    .showcase-head p{
+      margin-bottom:14px;
+    }
+
+    .media-large{
+      height:620px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#111;
+      position:relative;
+    }
+
+    .media-large img,
+    .media-tile img,
+    .phone img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .play{
+      position:absolute;
+      inset:auto 32px 32px auto;
+      width:82px;
+      height:82px;
+      border:1px solid rgba(255,255,255,.8);
+      border-radius:50%;
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-size:30px;
+      background:rgba(0,0,0,.18);
+    }
+
+    .video-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:52px;
+    }
+
+    .video-wrapper{
+        position:relative;
+        overflow:hidden;
+
+        border:1px solid var(--line);
+
+        aspect-ratio:16/9;
+
+        background:#111;
+    }
+
+    .video-wrapper iframe{
+        position:absolute;
+        inset:0;
+
+        width:100%;
+        height:100%;
+
+        border:0;
+    }
+
+    .design-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:52px;
+      justify-items: stretch;
+    }
+
+    .media-tile{
+      aspect-ratio: 210 / 297;
+      width: 100%;
+      min-height:auto;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#111;
+    }
+
+    .media-tile.wide{
+      grid-column:1/-1;
+      min-height:560px;
+    }
+
+    .phone-grid{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:52px;
+      justify-items: stretch;
+    }
+
+    .phone{
+      width: 100%;
+      aspect-ratio:9/16;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#111;
+    }
+
+    .result{
+      position:relative;
+      z-index:2;
+      margin:0 32px 58px;
+      padding:42px;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:40px;
+    }
+
+    .next{
+      position:relative;
+      z-index:2;
+      padding:42px 32px 58px;
+      border-top:1px solid var(--line);
+    }
+
+    .next a{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:26px 0;
+      border-bottom:1px solid var(--soft-line);
+      font-size:clamp(28px,4vw,58px);
+      font-weight:900;
+      letter-spacing:-.055em;
+    }
+
+    footer{
+      position:relative;
+      z-index:2;
+      border-top:1px solid var(--soft-line);
+      margin:0 32px;
+      padding:18px 0 24px;
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    @media(max-width:850px){
+      .site:after{display:none}
+
+      header{
+        padding:0 18px;
+      }
+
+      nav a:not(.wallet){
+        display:none;
+      }
+
+      .project-hero{
+        padding:42px 22px 34px;
+        min-height:auto;
+      }
+
+      h1{
+        font-size:clamp(52px,16vw,84px);
+      }
+
+      .cover{
+        margin:0 22px 38px;
+        height:420px;
+      }
+
+      .overview,
+      .service-grid,
+      .result{
+        grid-template-columns:1fr;
+      }
+
+      .overview{
+        margin:0 22px 38px;
+      }
+
+      .service-grid{
+        margin:0 22px 38px;
+      }
+
+      .showcase{
+        padding:32px 22px 42px;
+      }
+
+      .showcase-head{
+        display:block;
+      }
+
+      .showcase-head p{
+        margin-top:14px;
+      }
+
+      .media-large{
+        height:420px;
+      }
+
+      .video-grid{
+        grid-template-columns:1fr;
+        gap:22px;
+      }
+
+      .design-grid,
+      .phone-grid,
+      .gallery{
+        grid-template-columns:1fr;
+        gap:22px;
+      }
+
+      .media-tile,
+      .media-tile.wide{
+        min-height:360px;
+      }
+
+      .gallery{
+        padding:32px 22px 42px;
+      }
+
+      .gallery img:first-child{
+        grid-row:auto;
+        min-height:420px;
+      }
+
+      .result{
+        margin:0 22px 38px;
+        padding:28px 0;
+      }
+
+      footer{
+        margin:0 18px;
+        flex-direction:column;
+        gap:8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="site">
+    <div class="grain" aria-hidden="true"></div>
+
+    <header>
+      <a class="brand" href="index.html">Nivolu</a>
+
+      <nav>
+        <a href="index.html#projects">Projekte</a>
+        <a href="index.html#about">Über</a>
+        <a href="index.html#contact">Kontakt</a>
+        <a class="wallet" href="index.html">Zurück →</a>
+      </nav>
+    </header>
+
+    <section class="project-hero">
+      <div class="project-meta">
+        <span>Sassenberger Schützenfest</span>
+        <span>Video · Design · Social</span>
+      </div>
+
+      <h1>
+        Bürgerschützenverein
+        <span class="accent">Sassenberg</span>
+      </h1>
+
+      <p class="project-intro">
+        Ein moderner visueller Auftritt für das Sassenberger Schützenfest —
+        von Videoschnitt über Grafikprodukte bis hin zu Instagram Content
+        für Posts und Reels.
+      </p>
+    </section>
+
+    <section class="cover">
+      <img src="img/BSVSBG.png" alt="Bürgerschützenverein Sassenberg">
+    </section>
+
+    <section class="overview">
+      <div class="overview-box">
+        <h2>Projekt</h2>
+        <p>
+          Für den Bürgerschützenverein Sassenberg wurden verschiedene Medienprodukte
+          entwickelt, die das Vereinsleben, Veranstaltungen und das Schützenfest
+          visuell hochwertig und zeitgemäß kommunizieren.
+        </p>
+      </div>
+    </section>
+
+    <section class="service-grid">
+      <article class="service">
+        <div class="number">01</div>
+        <h3>Video</h3>
+        <p>Reels, Rückblicke und Clips mit Fokus auf Stimmung, Rhythmus und Emotion.</p>
+      </article>
+
+      <article class="service">
+        <div class="number">02</div>
+        <h3>Print</h3>
+        <p>Flyer, Postkarten und Festzeitschrift für eine klare Kommunikation vor Ort.</p>
+      </article>
+
+      <article class="service">
+        <div class="number">03</div>
+        <h3>Social</h3>
+        <p>Instagram Posts, Reels und Contentformate für Ankündigungen und Begleitung.</p>
+      </article>
+
+      <article class="service">
+        <div class="number">04</div>
+        <h3>Look</h3>
+        <p>Ein einheitlicher visueller Auftritt für digitale und gedruckte Medien.</p>
+      </article>
+    </section>
+
+    <section class="showcase">
+      <div class="showcase-head">
+        <h2>Video</h2>
+        <p>
+          Aus aufgenommenem Material der Festtage entstehen 
+          Videos für Social Media und Veranstaltungsrückblicke.
+        </p>
+      </div>
+
+      <div class="video-grid">
+
+        <div class="video-wrapper">
+            <iframe
+            src="https://www.youtube.com/embed/Pfy-cZmbi8o"
+            title="Schützenfest Sassenberg 2025 [Kurzfassung]"
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="video-wrapper">
+            <iframe
+            src="https://www.youtube.com/embed/5yhCt_1WUhk"
+            title="Schützenfest Sassenberg 2024 [Langfassung]"
+            allowfullscreen>
+            </iframe>
+        </div>
+
+    </div>
+    </section>
+
+    <section class="showcase">
+      <div class="showcase-head">
+        <h2>Grafik</h2>
+        <p>
+          Flyer, Postkarten und eine Festzeitschrift übertragen das Vereinsbild
+          in klare, wiedererkennbare Printprodukte.
+        </p>
+      </div>
+
+      <div class="design-grid">
+        <div class="media-tile">
+          <img src="img/BSVSBG/ZEITSCHRIFT_COVER.png" alt="Flyer Gestaltung">
+        </div>
+
+        <div class="media-tile">
+          <img src="img/bsv-postkarte.jpg" alt="Postkarten Gestaltung">
+        </div>
+
+        <div class="media-tile">
+          <img src="img/bsv-festzeitschrift.jpg" alt="Festzeitschrift Gestaltung">
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase">
+      <div class="showcase-head">
+        <h2>Instagram</h2>
+        <p>
+          Für den Instagram-Kanal entstehen Posts, Reels und grafische Inhalte,
+          die Veranstaltungen ankündigen, begleiten und nachbereiten.
+        </p>
+      </div>
+
+      <div class="phone-grid">
+        <div class="phone">
+          <img src="img/bsv-post-1.jpg" alt="Instagram Post">
+        </div>
+
+        <div class="phone">
+          <img src="img/bsv-reel-1.jpg" alt="Instagram Reel">
+        </div>
+
+        <div class="phone">
+          <img src="img/bsv-post-2.jpg" alt="Instagram Post">
+        </div>
+
+        <div class="phone">
+          <img src="img/bsv-post-2.jpg" alt="Instagram Post">
+        </div>
+
+        <div class="phone">
+          <img src="img/bsv-post-2.jpg" alt="Instagram Post">
+        </div>
+      </div>
+    </section>
+
+    <section class="result">
+      <h2>Ergebnis</h2>
+      <p>
+        Durch die Verbindung aus Video, Grafikdesign und Social Content entsteht
+        ein moderner Vereinsauftritt, der Tradition sichtbar macht und gleichzeitig
+        zeitgemäß online, auf Veranstaltungen und in gedruckten Medien kommuniziert.
+      </p>
+    </section>
+
+    <footer>
+      <div><b>NIVOLU</b> — made by humans</div>
+      <div>
+        <a href="index.html">Startseite</a> ·
+        <a href="#">Impressum</a> ·
+        <a href="#">Datenschutz</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
